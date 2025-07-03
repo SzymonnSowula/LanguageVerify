@@ -1,21 +1,17 @@
-from flask import Flask, request, jsonify
-from groq import Groq
-from flask_cors import CORS
-from dotenv import load_dotenv
 import os
-
-# Wczytanie zmiennych środowiskowych z pliku .env
+from flask import Flask, request, jsonify
+from dotenv import load_dotenv
+from groq import Groq
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # Dodajemy obsługę CORS dla całej aplikacji
 
-# Klucz API z pliku .env
-API_KEY = os.getenv("API_KEY")
+# Wczytanie klucza API z .env lub z localStorage (w zależności od platformy)
+API_KEY = os.getenv('API_KEY') or 'default_api_key'  # Jeśli nie ma klucza w .env, użyj domyślnego
 
-# Funkcja do weryfikacji tłumaczenia
+# Funkcja weryfikacji tłumaczenia
 def verify_translation(source_text, translated_text, source_language, target_language):
-    client = Groq(api_key=API_KEY)  # Autoryzacja API
+    client = Groq(api_key=API_KEY)
     response = client.chat.completions.create(
         model="meta-llama/llama-4-scout-17b-16e-instruct",
         messages=[
@@ -23,12 +19,10 @@ def verify_translation(source_text, translated_text, source_language, target_lan
         ]
     )
     
-    # Wyciągamy odpowiedź modelu
+    # Wyciąganie odpowiedzi
     response_data = response.choices[0].message.content
-    
     return {"response": response_data}
 
-# Endpoint API
 @app.route('/verify-translation', methods=['POST'])
 def verify():
     try:

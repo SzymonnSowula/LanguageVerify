@@ -1,703 +1,768 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LangVerify</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --primary-color: #000000;
-            --secondary-color: #ffffff;
-            --accent-color: #007AFF;
-            --accent-hover: #0056CC;
-            --text-primary: #1D1D1F;
-            --text-secondary: #6E6E73;
-            --background-primary: #ffffff;
-            --background-secondary: #F5F5F7;
-            --border-color: #E5E5E7;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --shadow-hover: 0 8px 40px rgba(0, 0, 0, 0.12);
-            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --border-radius: 16px;
-            --border-radius-small: 8px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+      :root {
+        --primary-color: #000000;
+        --secondary-color: #ffffff;
+        --accent-color: #007aff;
+        --accent-hover: #0056cc;
+        --text-primary: #1d1d1f;
+        --text-secondary: #6e6e73;
+        --background-primary: #ffffff;
+        --background-secondary: #f5f5f7;
+        --border-color: #e5e5e7;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        --shadow-hover: 0 8px 40px rgba(0, 0, 0, 0.12);
+        --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --border-radius: 16px;
+        --border-radius-small: 8px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--background-secondary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        background: var(--background-secondary);
+        color: var(--text-primary);
+        line-height: 1.6;
+        overflow-x: hidden;
+        min-height: 100vh;
+      }
 
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      /* Header */
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(229, 229, 231, 0.5);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        animation: slideDown 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px 0;
+      }
+
+      .logo {
+        font-size: 32px;
+        font-weight: 700;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.02em;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: var(--text-secondary);
+        font-size: 16px;
+        font-weight: 400;
+        margin-top: 8px;
+        opacity: 0;
+        animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
+      }
+
+      /* Main Content */
+      .main {
+        padding: 80px 0 120px;
+      }
+
+      .form-container {
+        background: var(--background-primary);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        padding: 48px;
+        margin-bottom: 40px;
+        border: 1px solid var(--border-color);
+        transition: var(--transition);
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
+      }
+
+      .form-container:hover {
+        box-shadow: var(--shadow-hover);
+        transform: translateY(-2px);
+      }
+
+      .form-grid {
+        display: grid;
+        gap: 32px;
+      }
+
+      .form-group {
+        position: relative;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+        letter-spacing: 0.01em;
+      }
+      .header.scrolled {
+        opacity: 0.7;
+      }
+      .form-input {
+        width: 100%;
+        padding: 16px 20px;
+        border: 2px solid var(--border-color);
+        border-radius: var(--border-radius-small);
+        font-size: 16px;
+        font-family: inherit;
+        background: var(--background-primary);
+        color: var(--text-primary);
+        transition: var(--transition);
+        resize: vertical;
+        min-height: 60px;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+      }
+
+      .form-input::placeholder {
+        color: var(--text-secondary);
+      }
+
+      .textarea-large {
+        min-height: 120px;
+      }
+
+      .select-wrapper {
+        position: relative;
+        margin-bottom: 16px;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid var(--border-color);
+        border-radius: var(--border-radius-small);
+        font-size: 14px;
+        font-family: inherit;
+        background: var(--background-secondary);
+        color: var(--text-primary);
+        transition: var(--transition);
+        margin-bottom: 12px;
+      }
+
+      .search-input:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+      }
+
+      .form-select {
+        width: 100%;
+        padding: 16px 20px;
+        border: 2px solid var(--border-color);
+        border-radius: var(--border-radius-small);
+        font-size: 16px;
+        font-family: inherit;
+        background: var(--background-primary);
+        color: var(--text-primary);
+        transition: var(--transition);
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 16px center;
+        background-repeat: no-repeat;
+        background-size: 16px;
+        padding-right: 48px;
+      }
+
+      .form-select:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+      }
+
+      .language-grid {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 24px;
+        align-items: end;
+      }
+
+      .switch-button {
+        background: var(--background-secondary);
+        border: 2px solid var(--border-color);
+        border-radius: 50%;
+        width: 56px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition);
+        color: var(--text-secondary);
+        font-size: 20px;
+        margin-bottom: 16px;
+      }
+
+      .switch-button:hover {
+        background: var(--accent-color);
+        border-color: var(--accent-color);
+        color: white;
+        transform: rotate(180deg);
+      }
+
+      .button-group {
+        display: flex;
+        gap: 16px;
+        margin-top: 40px;
+      }
+
+      .btn {
+        padding: 16px 32px;
+        border: none;
+        border-radius: var(--border-radius-small);
+        font-size: 16px;
+        font-weight: 500;
+        font-family: inherit;
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 140px;
+      }
+
+      .btn-primary {
+        background: var(--accent-color);
+        color: white;
+        box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(0, 122, 255, 0.4);
+      }
+
+      .btn-primary:active {
+        transform: translateY(0);
+      }
+
+      /* Results */
+      .results-container {
+        background: var(--background-primary);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        padding: 48px;
+        border: 1px solid var(--border-color);
+        opacity: 0;
+        transform: translateY(30px);
+        transition: var(--transition);
+      }
+
+      .results-container.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .results-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 24px;
+        letter-spacing: -0.01em;
+      }
+
+      .results-content {
+        font-size: 16px;
+        line-height: 1.7;
+        color: var(--text-primary);
+        background: var(--background-secondary);
+        padding: 24px;
+        border-radius: var(--border-radius-small);
+        border-left: 4px solid var(--accent-color);
+      }
+
+      .loading {
+        display: none;
+        text-align: center;
+        padding: 40px;
+      }
+
+      .loading.show {
+        display: block;
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid var(--border-color);
+        border-top: 3px solid var(--accent-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 16px;
+      }
+
+      .loading-text {
+        color: var(--text-secondary);
+        font-size: 16px;
+      }
+
+      /* Animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        /* Header */
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(229, 229, 231, 0.5);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            animation: slideDown 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+          padding: 0 20px;
         }
 
         .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 32px 0;
+          padding: 24px 0;
         }
 
         .logo {
-            font-size: 32px;
-            font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.02em;
+          font-size: 28px;
         }
 
-        .subtitle {
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 16px;
-            font-weight: 400;
-            margin-top: 8px;
-            opacity: 0;
-            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
-        }
-
-        /* Main Content */
         .main {
-            padding: 80px 0 120px;
+          padding: 40px 0 80px;
         }
 
         .form-container {
-            background: var(--background-primary);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 48px;
-            margin-bottom: 40px;
-            border: 1px solid var(--border-color);
-            transition: var(--transition);
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
-        }
-
-        .form-container:hover {
-            box-shadow: var(--shadow-hover);
-            transform: translateY(-2px);
-        }
-
-        .form-grid {
-            display: grid;
-            gap: 32px;
-        }
-
-        .form-group {
-            position: relative;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-            letter-spacing: 0.01em;
-        }
-        .header.scrolled {
-    opacity: 0.7;
-}
-        .form-input {
-            width: 100%;
-            padding: 16px 20px;
-            border: 2px solid var(--border-color);
-            border-radius: var(--border-radius-small);
-            font-size: 16px;
-            font-family: inherit;
-            background: var(--background-primary);
-            color: var(--text-primary);
-            transition: var(--transition);
-            resize: vertical;
-            min-height: 60px;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
-        }
-
-        .form-input::placeholder {
-            color: var(--text-secondary);
-        }
-
-        .textarea-large {
-            min-height: 120px;
-        }
-
-        .select-wrapper {
-            position: relative;
-            margin-bottom: 16px;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--border-color);
-            border-radius: var(--border-radius-small);
-            font-size: 14px;
-            font-family: inherit;
-            background: var(--background-secondary);
-            color: var(--text-primary);
-            transition: var(--transition);
-            margin-bottom: 12px;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
-        }
-
-        .form-select {
-            width: 100%;
-            padding: 16px 20px;
-            border: 2px solid var(--border-color);
-            border-radius: var(--border-radius-small);
-            font-size: 16px;
-            font-family: inherit;
-            background: var(--background-primary);
-            color: var(--text-primary);
-            transition: var(--transition);
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 16px center;
-            background-repeat: no-repeat;
-            background-size: 16px;
-            padding-right: 48px;
-        }
-
-        .form-select:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+          padding: 32px 24px;
         }
 
         .language-grid {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 24px;
-            align-items: end;
+          grid-template-columns: 1fr;
+          gap: 16px;
         }
 
         .switch-button {
-            background: var(--background-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: 50%;
-            width: 56px;
-            height: 56px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-            color: var(--text-secondary);
-            font-size: 20px;
-            margin-bottom: 16px;
-        }
-
-        .switch-button:hover {
-            background: var(--accent-color);
-            border-color: var(--accent-color);
-            color: white;
-            transform: rotate(180deg);
+          justify-self: center;
+          margin: 16px 0;
         }
 
         .button-group {
-            display: flex;
-            gap: 16px;
-            margin-top: 40px;
+          flex-direction: column;
         }
 
         .btn {
-            padding: 16px 32px;
-            border: none;
-            border-radius: var(--border-radius-small);
-            font-size: 16px;
-            font-weight: 500;
-            font-family: inherit;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 140px;
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .form-container {
+          padding: 24px 16px;
         }
 
-        .btn-primary {
-            background: var(--accent-color);
-            color: white;
-            box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 32px rgba(0, 122, 255, 0.4);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-
-        /* Results */
         .results-container {
-            background: var(--background-primary);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 48px;
-            border: 1px solid var(--border-color);
-            opacity: 0;
-            transform: translateY(30px);
-            transition: var(--transition);
+          padding: 32px 24px;
         }
-
-        .results-container.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .results-title {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 24px;
-            letter-spacing: -0.01em;
-        }
-
-        .results-content {
-            font-size: 16px;
-            line-height: 1.7;
-            color: var(--text-primary);
-            background: var(--background-secondary);
-            padding: 24px;
-            border-radius: var(--border-radius-small);
-            border-left: 4px solid var(--accent-color);
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 40px;
-        }
-
-        .loading.show {
-            display: block;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border-color);
-            border-top: 3px solid var(--accent-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 16px;
-        }
-
-        .loading-text {
-            color: var(--text-secondary);
-            font-size: 16px;
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 20px;
-            }
-
-            .header-content {
-                padding: 24px 0;
-            }
-
-            .logo {
-                font-size: 28px;
-            }
-
-            .main {
-                padding: 40px 0 80px;
-            }
-
-            .form-container {
-                padding: 32px 24px;
-            }
-
-            .language-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-
-            .switch-button {
-                justify-self: center;
-                margin: 16px 0;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .form-container {
-                padding: 24px 16px;
-            }
-
-            .results-container {
-                padding: 32px 24px;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div>
-                    <div class="logo">LangVerify</div>
-                    <div class="subtitle">AI-powered</div>
-                </div>
-            </div>
+      <div class="container">
+        <div class="header-content">
+          <div>
+            <div class="logo">LangVerify</div>
+            <div class="subtitle">AI-powered</div>
+          </div>
         </div>
+      </div>
     </header>
 
     <main class="main">
-        <div class="container">
-            <div class="form-container">
-                <form id="translation-form">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label" for="source-text">Source Text</label>
-                            <textarea id="source-text" class="form-input textarea-large" 
-                                    placeholder="Enter your original text here..." required></textarea>
-                        </div>
+      <div class="container">
+        <div class="form-container">
+          <form id="translation-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="source-text">Source Text</label>
+                <textarea
+                  id="source-text"
+                  class="form-input textarea-large"
+                  placeholder="Enter your original text here..."
+                  required
+                ></textarea>
+              </div>
 
-                        <div class="form-group">
-                            <label class="form-label" for="translated-text">Translation</label>
-                            <textarea id="translated-text" class="form-input textarea-large" 
-                                    placeholder="Enter the translation to verify..." required></textarea>
-                        </div>
+              <div class="form-group">
+                <label class="form-label" for="translated-text"
+                  >Translation</label
+                >
+                <textarea
+                  id="translated-text"
+                  class="form-input textarea-large"
+                  placeholder="Enter the translation to verify..."
+                  required
+                ></textarea>
+              </div>
 
-                        <div class="language-grid">
-                            <div class="form-group">
-                                <label class="form-label" for="source-language">Source Language</label>
-                                <div class="select-wrapper">
-                                    <input type="text" id="source-language-search" class="search-input" 
-                                           placeholder="Search languages..." />
-                                    <select id="source-language" class="form-select" required>
-                                        <option value="pl">Polski</option>
-                                        <option value="en">Angielski</option>
-                                        <option value="de">Niemiecki</option>
-                                        <option value="cs">Czeski</option>
-                                        <option value="fr">Francuski</option>
-                                        <option value="es">Hiszpański</option>
-                                        <option value="it">Włoski</option>
-                                        <option value="pt">Portugalski</option>
-                                        <option value="ru">Rosyjski</option>
-                                        <option value="uk">Ukraiński</option>
-                                        <option value="hr">Chorwacki</option>
-                                        <option value="nl">Holenderski</option>
-                                        <option value="sv">Szwedzki</option>
-                                        <option value="tr">Turecki</option>
-                                        <option value="hi">Hindi</option>
-                                        <option value="el">Grecki</option>
-                                        <option value="hu">Węgierski</option>
-                                        <option value="id">Indonezyjski</option>
-                                        <option value="lt">Litewski</option>
-                                        <option value="lv">Łotewski</option>
-                                        <option value="no">Norweski</option>
-                                        <option value="ro">Rumuński</option>
-                                        <option value="sk">Słowacki</option>
-                                        <option value="sl">Słoweński</option>
-                                        <option value="ja">Japoński</option>
-                                        <option value="ko">Koreański</option>
-                                        <option value="zh">Chiński</option>
-                                        <option value="ar">Arabski</option>
-                                        <option value="fa">Perski</option>
-                                        <option value="he">Hebrajski</option>
-                                        <option value="ur">Urdu</option>
-                                        <option value="vi">Wietnamski</option>
-                                        <option value="th">Tajski</option>
-                                        <option value="ms">Malajski</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <button type="button" id="switch-languages" class="switch-button" title="Switch Languages">
-                                ⇄
-                            </button>
-
-                            <div class="form-group">
-                                <label class="form-label" for="target-language">Target Language</label>
-                                <div class="select-wrapper">
-                                    <input type="text" id="target-language-search" class="search-input" 
-                                           placeholder="Search languages..." />
-                                    <select id="target-language" class="form-select" required>
-                                        <option value="pl">Polski</option>
-                                        <option value="en">Angielski</option>
-                                        <option value="de">Niemiecki</option>
-                                        <option value="cs">Czeski</option>
-                                        <option value="fr">Francuski</option>
-                                        <option value="es">Hiszpański</option>
-                                        <option value="it">Włoski</option>
-                                        <option value="pt">Portugalski</option>
-                                        <option value="ru">Rosyjski</option>
-                                        <option value="uk">Ukraiński</option>
-                                        <option value="hr">Chorwacki</option>
-                                        <option value="nl">Holenderski</option>
-                                        <option value="sv">Szwedzki</option>
-                                        <option value="tr">Turecki</option>
-                                        <option value="hi">Hindi</option>
-                                        <option value="el">Grecki</option>
-                                        <option value="hu">Węgierski</option>
-                                        <option value="id">Indonezyjski</option>
-                                        <option value="lt">Litewski</option>
-                                        <option value="lv">Łotewski</option>
-                                        <option value="no">Norweski</option>
-                                        <option value="ro">Rumuński</option>
-                                        <option value="sk">Słowacki</option>
-                                        <option value="sl">Słoweński</option>
-                                        <option value="ja">Japoński</option>
-                                        <option value="ko">Koreański</option>
-                                        <option value="zh">Chiński</option>
-                                        <option value="ar">Arabski</option>
-                                        <option value="fa">Perski</option>
-                                        <option value="he">Hebrajski</option>
-                                        <option value="ur">Urdu</option>
-                                        <option value="vi">Wietnamski</option>
-                                        <option value="th">Tajski</option>
-                                        <option value="ms">Malajski</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="button-group">
-                            <button type="submit" class="btn btn-primary">Verify Translation</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <div id="results-section" class="results-container">
-                <div class="loading" id="loading">
-                    <div class="spinner"></div>
-                    <div class="loading-text">Analyzing translation quality...</div>
+              <div class="language-grid">
+                <div class="form-group">
+                  <label class="form-label" for="source-language"
+                    >Source Language</label
+                  >
+                  <div class="select-wrapper">
+                    <input
+                      type="text"
+                      id="source-language-search"
+                      class="search-input"
+                      placeholder="Search languages..."
+                    />
+                    <select id="source-language" class="form-select" required>
+                      <option value="pl">Polski</option>
+                      <option value="en">Angielski</option>
+                      <option value="de">Niemiecki</option>
+                      <option value="cs">Czeski</option>
+                      <option value="fr">Francuski</option>
+                      <option value="es">Hiszpański</option>
+                      <option value="it">Włoski</option>
+                      <option value="pt">Portugalski</option>
+                      <option value="ru">Rosyjski</option>
+                      <option value="uk">Ukraiński</option>
+                      <option value="hr">Chorwacki</option>
+                      <option value="nl">Holenderski</option>
+                      <option value="sv">Szwedzki</option>
+                      <option value="tr">Turecki</option>
+                      <option value="hi">Hindi</option>
+                      <option value="el">Grecki</option>
+                      <option value="hu">Węgierski</option>
+                      <option value="id">Indonezyjski</option>
+                      <option value="lt">Litewski</option>
+                      <option value="lv">Łotewski</option>
+                      <option value="no">Norweski</option>
+                      <option value="ro">Rumuński</option>
+                      <option value="sk">Słowacki</option>
+                      <option value="sl">Słoweński</option>
+                      <option value="ja">Japoński</option>
+                      <option value="ko">Koreański</option>
+                      <option value="zh">Chiński</option>
+                      <option value="ar">Arabski</option>
+                      <option value="fa">Perski</option>
+                      <option value="he">Hebrajski</option>
+                      <option value="ur">Urdu</option>
+                      <option value="vi">Wietnamski</option>
+                      <option value="th">Tajski</option>
+                      <option value="ms">Malajski</option>
+                    </select>
+                  </div>
                 </div>
-                <div id="results-content" style="display: none;">
-                    <h2 class="results-title">Verification Results</h2>
-                    <div class="results-content">
-                        <p id="results-text">Your verification results will appear here.</p>
-                    </div>
+
+                <button
+                  type="button"
+                  id="switch-languages"
+                  class="switch-button"
+                  title="Switch Languages"
+                >
+                  ⇄
+                </button>
+
+                <div class="form-group">
+                  <label class="form-label" for="target-language"
+                    >Target Language</label
+                  >
+                  <div class="select-wrapper">
+                    <input
+                      type="text"
+                      id="target-language-search"
+                      class="search-input"
+                      placeholder="Search languages..."
+                    />
+                    <select id="target-language" class="form-select" required>
+                      <option value="pl">Polski</option>
+                      <option value="en">Angielski</option>
+                      <option value="de">Niemiecki</option>
+                      <option value="cs">Czeski</option>
+                      <option value="fr">Francuski</option>
+                      <option value="es">Hiszpański</option>
+                      <option value="it">Włoski</option>
+                      <option value="pt">Portugalski</option>
+                      <option value="ru">Rosyjski</option>
+                      <option value="uk">Ukraiński</option>
+                      <option value="hr">Chorwacki</option>
+                      <option value="nl">Holenderski</option>
+                      <option value="sv">Szwedzki</option>
+                      <option value="tr">Turecki</option>
+                      <option value="hi">Hindi</option>
+                      <option value="el">Grecki</option>
+                      <option value="hu">Węgierski</option>
+                      <option value="id">Indonezyjski</option>
+                      <option value="lt">Litewski</option>
+                      <option value="lv">Łotewski</option>
+                      <option value="no">Norweski</option>
+                      <option value="ro">Rumuński</option>
+                      <option value="sk">Słowacki</option>
+                      <option value="sl">Słoweński</option>
+                      <option value="ja">Japoński</option>
+                      <option value="ko">Koreański</option>
+                      <option value="zh">Chiński</option>
+                      <option value="ar">Arabski</option>
+                      <option value="fa">Perski</option>
+                      <option value="he">Hebrajski</option>
+                      <option value="ur">Urdu</option>
+                      <option value="vi">Wietnamski</option>
+                      <option value="th">Tajski</option>
+                      <option value="ms">Malajski</option>
+                    </select>
+                  </div>
                 </div>
+              </div>
+
+              <div class="button-group">
+                <button type="submit" class="btn btn-primary">
+                  Verify Translation
+                </button>
+              </div>
             </div>
+          </form>
+          <label for="api-key">Wprowadź swój API Key:</label>
+          <input type="text" id="api-key" placeholder="Wprowadź klucz API" />
+          <button type="button" id="save-api-key">Zapisz API Key</button>
         </div>
+
+        <div id="results-section" class="results-container">
+          <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div class="loading-text">Analyzing translation quality...</div>
+          </div>
+          <div id="results-content" style="display: none">
+            <h2 class="results-title">Verification Results</h2>
+            <div class="results-content">
+              <p id="results-text">
+                Your verification results will appear here.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
 
     <script>
-        // Language search functionality
-        function setupLanguageSearch() {
-            const sourceSearch = document.getElementById('source-language-search');
-            const targetSearch = document.getElementById('target-language-search');
-            
-            sourceSearch.addEventListener('input', () => filterLanguages('source'));
-            targetSearch.addEventListener('input', () => filterLanguages('target'));
-        }
+      // Language search functionality
+      function setupLanguageSearch() {
+        const sourceSearch = document.getElementById("source-language-search");
+        const targetSearch = document.getElementById("target-language-search");
 
-        function filterLanguages(type) {
-            const searchValue = document.getElementById(`${type}-language-search`).value.toLowerCase();
-            const selectElement = document.getElementById(`${type}-language`);
-            const options = selectElement.options;
-            
-            for (let i = 0; i < options.length; i++) {
-                const option = options[i];
-                const shouldShow = option.text.toLowerCase().includes(searchValue);
-                option.style.display = shouldShow ? 'block' : 'none';
-            }
-        }
+        sourceSearch.addEventListener("input", () => filterLanguages("source"));
+        targetSearch.addEventListener("input", () => filterLanguages("target"));
+      }
 
-        // Language switcher
-        function setupLanguageSwitcher() {
-            const switchButton = document.getElementById('switch-languages');
-            switchButton.addEventListener('click', function() {
-                const sourceLanguage = document.getElementById('source-language');
-                const targetLanguage = document.getElementById('target-language');
-                
-                const sourceValue = sourceLanguage.value;
-                const targetValue = targetLanguage.value;
-                
-                // Animate the switch
-                this.style.transform = 'rotate(180deg)';
-                setTimeout(() => {
-                    this.style.transform = 'rotate(0deg)';
-                }, 300);
-                
-                // Switch values
-                sourceLanguage.value = targetValue;
-                targetLanguage.value = sourceValue;
-                
-                // Clear search inputs
-                document.getElementById('source-language-search').value = '';
-                document.getElementById('target-language-search').value = '';
-                
-                // Reset visibility of all options
-                resetLanguageOptions();
-            });
-        }
+      function filterLanguages(type) {
+        const searchValue = document
+          .getElementById(`${type}-language-search`)
+          .value.toLowerCase();
+        const selectElement = document.getElementById(`${type}-language`);
+        const options = selectElement.options;
 
-        function resetLanguageOptions() {
-            const selects = ['source-language', 'target-language'];
-            selects.forEach(selectId => {
-                const options = document.getElementById(selectId).options;
-                for (let i = 0; i < options.length; i++) {
-                    options[i].style.display = 'block';
-                }
-            });
+        for (let i = 0; i < options.length; i++) {
+          const option = options[i];
+          const shouldShow = option.text.toLowerCase().includes(searchValue);
+          option.style.display = shouldShow ? "block" : "none";
         }
+      }
+      document
+        .getElementById("save-api-key")
+        .addEventListener("click", function () {
+          const apiKey = document.getElementById("api-key").value;
 
-        // Form submission
-        function setupFormSubmission() {
-            const form = document.getElementById('translation-form');
-            const resultsSection = document.getElementById('results-section');
-            const loading = document.getElementById('loading');
-            const resultsContent = document.getElementById('results-content');
-            const resultsText = document.getElementById('results-text');
-            
-            form.addEventListener('submit', async function(event) {
-                event.preventDefault();
-                
-                // Show loading state
-                resultsSection.classList.add('show');
-                loading.classList.add('show');
-                resultsContent.style.display = 'none';
-                
-                // Scroll to results
-                resultsSection.scrollIntoView({ behavior: 'smooth' });
-                
-                // Get form data
-                const formData = {
-                    source_text: document.getElementById('source-text').value,
-                    translated_text: document.getElementById('translated-text').value,
-                    source_language: document.getElementById('source-language').value,
-                    target_language: document.getElementById('target-language').value
-                };
-                
-                try {
-                    // Simulate API call (replace with actual endpoint)
-                    const response = await fetch('http://127.0.0.1:5000/verify-translation', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(formData)
-                    });
-                    
-                    const data = await response.json();
-                    
-                    // Hide loading and show results
-                    setTimeout(() => {
-                        loading.classList.remove('show');
-                        resultsContent.style.display = 'block';
-                        
-                        if (response.ok) {
-                            resultsText.textContent = data.response || 'No verification response provided.';
-                        } else {
-                            resultsText.textContent = `Error: ${data.error || 'An unexpected error occurred.'}`;
-                        }
-                    }, 1500); // Minimum loading time for smooth UX
-                    
-                } catch (error) {
-                    // Hide loading and show error
-                    setTimeout(() => {
-                        loading.classList.remove('show');
-                        resultsContent.style.display = 'block';
-                        resultsText.textContent = `Connection error: ${error.message}. Please check if the server is running.`;
-                    }, 1500);
-                }
-            });
-        }
-        // Scroll opacity effect for header
-window.addEventListener('scroll', function() {
-    const header = document.querySelector('.header');
-    if (window.scrollY > 50) {
-        header.classList.add('scrolled');
-    } else {
-        header.classList.remove('scrolled');
-    }
-});
-
-        // Initialize everything when DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            setupLanguageSearch();
-            setupLanguageSwitcher();
-            setupFormSubmission();
-            resetLanguageOptions();
+          if (apiKey) {
+            // Zapisz klucz API w localStorage
+            localStorage.setItem("API_KEY", apiKey);
+            alert("API Key zapisano!");
+          } else {
+            alert("Proszę wprowadzić klucz API!");
+          }
         });
+
+      // Language switcher
+      function setupLanguageSwitcher() {
+        const switchButton = document.getElementById("switch-languages");
+        switchButton.addEventListener("click", function () {
+          const sourceLanguage = document.getElementById("source-language");
+          const targetLanguage = document.getElementById("target-language");
+
+          const sourceValue = sourceLanguage.value;
+          const targetValue = targetLanguage.value;
+
+          // Animate the switch
+          this.style.transform = "rotate(180deg)";
+          setTimeout(() => {
+            this.style.transform = "rotate(0deg)";
+          }, 300);
+
+          // Switch values
+          sourceLanguage.value = targetValue;
+          targetLanguage.value = sourceValue;
+
+          // Clear search inputs
+          document.getElementById("source-language-search").value = "";
+          document.getElementById("target-language-search").value = "";
+
+          // Reset visibility of all options
+          resetLanguageOptions();
+        });
+      }
+
+      function resetLanguageOptions() {
+        const selects = ["source-language", "target-language"];
+        selects.forEach((selectId) => {
+          const options = document.getElementById(selectId).options;
+          for (let i = 0; i < options.length; i++) {
+            options[i].style.display = "block";
+          }
+        });
+      }
+
+      // Form submission
+      function setupFormSubmission() {
+        const form = document.getElementById("translation-form");
+        const resultsSection = document.getElementById("results-section");
+        const loading = document.getElementById("loading");
+        const resultsContent = document.getElementById("results-content");
+        const resultsText = document.getElementById("results-text");
+
+        form.addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          // Show loading state
+          resultsSection.classList.add("show");
+          loading.classList.add("show");
+          resultsContent.style.display = "none";
+
+          // Scroll to results
+          resultsSection.scrollIntoView({ behavior: "smooth" });
+
+          // Get form data
+          const formData = {
+            source_text: document.getElementById("source-text").value,
+            translated_text: document.getElementById("translated-text").value,
+            source_language: document.getElementById("source-language").value,
+            target_language: document.getElementById("target-language").value,
+          };
+
+          try {
+            // Simulate API call (replace with actual endpoint)
+            const response = await fetch(
+              "http://127.0.0.1:5000/verify-translation",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+              }
+            );
+
+            const data = await response.json();
+
+            // Hide loading and show results
+            setTimeout(() => {
+              loading.classList.remove("show");
+              resultsContent.style.display = "block";
+
+              if (response.ok) {
+                resultsText.textContent =
+                  data.response || "No verification response provided.";
+              } else {
+                resultsText.textContent = `Error: ${data.error || "An unexpected error occurred."}`;
+              }
+            }, 1500); // Minimum loading time for smooth UX
+          } catch (error) {
+            // Hide loading and show error
+            setTimeout(() => {
+              loading.classList.remove("show");
+              resultsContent.style.display = "block";
+              resultsText.textContent = `Connection error: ${error.message}. Please check if the server is running.`;
+            }, 1500);
+          }
+        });
+      }
+      // Scroll opacity effect for header
+      window.addEventListener("scroll", function () {
+        const header = document.querySelector(".header");
+        if (window.scrollY > 50) {
+          header.classList.add("scrolled");
+        } else {
+          header.classList.remove("scrolled");
+        }
+      });
+
+      // Initialize everything when DOM is loaded
+      document.addEventListener("DOMContentLoaded", function () {
+        setupLanguageSearch();
+        setupLanguageSwitcher();
+        setupFormSubmission();
+        resetLanguageOptions();
+      });
     </script>
-</body>
+  </body>
 </html>
